@@ -1,0 +1,13 @@
+{
+    "name": "turierik/intro",
+    "description": "ez egy próba",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Turierik\\Intro\\": "src/"
+        }
+    },
+    "require": {
+        "alrik11es/cowsayphp": "^1.2"
+    }
+}
