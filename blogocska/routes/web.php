@@ -13,7 +13,7 @@ Route::patch('/posts/{post}', [PostController::class, 'update'])->name('posts.up
 
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect() -> route('posts.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

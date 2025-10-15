@@ -5,12 +5,14 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Requests\PostStoreOrUpdateRequest;
+use Illuminate\Support\Facades\Session;
 
 class PostController extends Controller
 {
     public function index(){
         //$kiskutya = Post::all();
-        $kiskutya = Post::with('author') -> get();
+        $kiskutya = Post::with('author') -> paginate(10);
         return view('posts.index', ['posts' => $kiskutya]);
     }
 
@@ -25,19 +27,12 @@ class PostController extends Controller
         ]);
     }
 
-    public function store(Request $request){
-        $validated = $request -> validate([
-            'title' => 'required|string',
-            'content' => 'required|string|min:10',
-            'author_id' => 'required|integer|exists:users,id',
-            'categories' => 'array',
-            'categories.*' => 'integer|distinct|exists:categories,id'
-        ], [
-            'content.min' => 'A tartalom legalább 10 karakter kell legyen!'
-        ]);
+    public function store(PostStoreOrUpdateRequest $request){
+        $validated = $request -> validated();
         $validated['is_public'] = $request -> has('is_public');
         $post = Post::create($validated);
         $post -> categories() -> sync($validated['categories'] ?? []);
+        Session::flash('post-created', $post -> title);
         return redirect() -> route('posts.index');
     }
 
@@ -49,16 +44,8 @@ class PostController extends Controller
         ]);
     }
 
-    public function update(Request $request, Post $post){
-        $validated = $request -> validate([
-            'title' => 'required|string',
-            'content' => 'required|string|min:10',
-            'author_id' => 'required|integer|exists:users,id',
-            'categories' => 'array',
-            'categories.*' => 'integer|distinct|exists:categories,id'
-        ], [
-            'content.min' => 'A tartalom legalább 10 karakter kell legyen!'
-        ]);
+    public function update(PostStoreOrUpdateRequest $request, Post $post){
+        $validated = $request -> validated();
         $validated['is_public'] = $request -> has('is_public');
         $post -> update($validated);
         $post -> categories() -> sync($validated['categories'] ?? []);

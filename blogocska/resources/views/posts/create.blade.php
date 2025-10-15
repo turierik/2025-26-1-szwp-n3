@@ -19,14 +19,16 @@
     Szerző:
     <select name="author_id">
         @foreach ($users as $user)
-            <option value="{{ $user -> id}}">{{ $user -> name }}</option>
+            <option value="{{ $user -> id}}" {{ old('author_id', -1) == $user -> id ? "selected" : "" }}>{{ $user -> name }}</option>
         @endforeach
     </select><br>
-    Publikus? <input type="checkbox" name="is_public"><br>
+    Publikus? <input type="checkbox" name="is_public" {{ old('is_public', 0) == "on" ? "checked" : "" }}><br>
 
     <h3 class="text-xl">Kategóriák</h3>
     @foreach ($categories as $category)
-        <input type="checkbox" class="mr-2" name="categories[]" value="{{ $category -> id }}">
+        <input type="checkbox" class="mr-2" name="categories[]" value="{{ $category -> id }}"
+            {{ in_array($category -> id, old('categories',[])) ? "checked" : "" }}
+        >
         <span style="color: {{ $category -> color }}">{{ $category -> name }}</span><br>
     @endforeach
 
