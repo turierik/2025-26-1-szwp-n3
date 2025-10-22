@@ -24,7 +24,6 @@ class PostStoreOrUpdateRequest extends FormRequest
         return [
             'title' => 'required|string',
             'content' => 'required|string|min:10',
-            'author_id' => 'required|integer|exists:users,id',
             'categories' => 'array',
             'categories.*' => 'integer|distinct|exists:categories,id'
         ];

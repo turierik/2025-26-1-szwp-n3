@@ -1,6 +1,6 @@
 @extends('bloglayout')
 
-@section('title', {{$post->title}} . " szerkesztése")
+@section('title', $post->title . " szerkesztése")
 
 @section('content')
 
@@ -17,17 +17,14 @@
         {{ $message }}
     @enderror<br>
     <textarea rows="5" name="content" class="w-full">{{ old('content', $post->content)}}</textarea><br>
-    Szerző:
-    <select name="author_id">
-        @foreach ($users as $user)
-            <option value="{{ $user -> id}}">{{ $user -> name }}</option>
-        @endforeach
-    </select><br>
-    Publikus? <input type="checkbox" name="is_public"><br>
+    <input type="hidden" name="is_public" value="off">
+    Publikus? <input type="checkbox" name="is_public" {{ old('is_public', $post->is_public ? "on" : "off" ) == "on" ? "checked" : "" }}><br>
 
     <h3 class="text-xl">Kategóriák</h3>
     @foreach ($categories as $category)
-        <input type="checkbox" class="mr-2" name="categories[]" value="{{ $category -> id }}">
+        <input type="checkbox" class="mr-2" name="categories[]" value="{{ $category -> id }}"
+            {{ in_array($category -> id, old('categories', $post -> categories -> pluck('id') -> toArray() )) ? "checked" : "" }}
+        >
         <span style="color: {{ $category -> color }}">{{ $category -> name }}</span><br>
     @endforeach
 
